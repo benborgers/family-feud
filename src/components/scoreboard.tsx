@@ -1,8 +1,19 @@
 import { useRef, useState } from "react";
-import { db, EVENTS, room } from "../lib/db";
+import Balancer from "react-wrap-balancer";
+import { db, EVENTS, room, SINGLETON_ID } from "../lib/db";
+import { getCurrentQuestion } from "../lib/questions";
 
 export default function Scoreboard() {
   const [hasInteracted, setHasInteracted] = useState(false);
+  const { data } = db.useQuery({
+    gameState: {
+      $: {
+        where: {
+          id: SINGLETON_ID,
+        },
+      },
+    },
+  });
 
   if (!hasInteracted) {
     return (
@@ -12,8 +23,18 @@ export default function Scoreboard() {
     );
   }
 
+  if (!data) return null;
+
+  const gameState = data.gameState[0];
+
+  const currentQuestion = getCurrentQuestion(gameState.currentQuestionId);
+  if (currentQuestion === null) return null;
+
   return (
-    <div>
+    <div className="p-8">
+      <Balancer className="text-5xl font-bold text-center !block mx-auto">
+        {currentQuestion.question}
+      </Balancer>
       <ThemeSongPlayer />
     </div>
   );

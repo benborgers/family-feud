@@ -14,6 +14,7 @@ const _schema = i.schema({
     gameState: i.entity({
       currentQuestionId: i.string(),
       revealedAnswers: i.json(),
+      awardedToPendingPointsAnswers: i.json(),
       pendingScore: i.number(),
       teamAScore: i.number(),
       teamBScore: i.number(),
