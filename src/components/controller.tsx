@@ -1,15 +1,6 @@
 import { db, EVENTS, room, SINGLETON_ID } from "../lib/db";
 import { getCurrentQuestion, QUESTIONS } from "../lib/questions";
-
-type GameState = {
-  currentQuestionId: string | null;
-  revealedAnswers: string[];
-  awardedToPendingPointsAnswers: string[];
-  pendingScore: number;
-  teamAScore: number;
-  teamBScore: number;
-  strikeCount: number;
-};
+import type { GameState } from "../lib/types";
 
 export default function Controller() {
   const { data } = db.useQuery({
@@ -35,6 +26,7 @@ export default function Controller() {
 
   return (
     <div className="p-4 space-y-4">
+      <ThemeSongButton />
       <QuestionSelector gameState={gameState} />
       <div>
         <p>Pending: {gameState.pendingScore ?? 0}</p>
@@ -42,7 +34,6 @@ export default function Controller() {
         <p>Team B: {gameState.teamBScore ?? 0}</p>
       </div>
       <Answers gameState={gameState} />
-      <ThemeSongButton />
     </div>
   );
 }

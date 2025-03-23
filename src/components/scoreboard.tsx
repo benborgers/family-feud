@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { db, EVENTS, room, SINGLETON_ID } from "../lib/db";
 import { getCurrentQuestion } from "../lib/questions";
+import type { GameState } from "../lib/types";
 
 export default function Scoreboard() {
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -35,6 +36,7 @@ export default function Scoreboard() {
       <Balancer className="text-5xl font-bold text-center !block mx-auto">
         {currentQuestion.question}
       </Balancer>
+      <Answers gameState={gameState} currentQuestion={currentQuestion} />
       <ThemeSongPlayer />
     </div>
   );
@@ -44,6 +46,18 @@ const playAudio = (url: string) => {
   const audio = new Audio(url);
   audio.play();
   return audio;
+};
+
+const Answers = ({ gameState }: { gameState: GameState }) => {
+  const currentQuestion = getCurrentQuestion(gameState.currentQuestionId)!;
+
+  return (
+    <div className="grid grid-cols-2 gap-8 max-w-2xl mx-auto">
+      {currentQuestion.answers.map((answer) => {
+        return <div key={answer.answer}>{answer.answer}</div>;
+      })}
+    </div>
+  );
 };
 
 const ThemeSongPlayer = () => {
