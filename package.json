@@ -1,14 +1,25 @@
 {
   "name": "family-feud",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "instant": "npx instant-cli@latest push schema"
   },
   "dependencies": {
-    "astro": "^5.5.4"
+    "@astrojs/react": "^4.2.1",
+    "@astrojs/vercel": "^8.1.3",
+    "@instantdb/react": "^0.17.32",
+    "@tailwindcss/vite": "^4.0.15",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "astro": "^5.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.15",
+    "wouter": "^3.6.0"
   }
 }
