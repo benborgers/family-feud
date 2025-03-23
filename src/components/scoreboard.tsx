@@ -45,6 +45,9 @@ const ThemeSongPlayer = () => {
     } else {
       audio.current = playAudio("/theme.mp3");
       isPlaying.current = true;
+      audio.current?.addEventListener("ended", () => {
+        isPlaying.current = false;
+      });
     }
   });
 
