@@ -24,7 +24,7 @@ export const QUESTIONS = [
 
   {
     id: "easy_a",
-    question: 'Name a class subject people would take for an easy "A"',
+    question: "Name a class subject people would take for an easy “A”",
     answers: [
       {
         answer: "Psychology",

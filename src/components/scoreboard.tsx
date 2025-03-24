@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { db, EVENTS, room, SINGLETON_ID } from "../lib/db";
@@ -32,15 +33,20 @@ export default function Scoreboard() {
   if (currentQuestion === null) return null;
 
   return (
-    <div className="p-8">
-      <Balancer className="text-5xl font-bold text-center !block mx-auto">
-        {currentQuestion.question}
-      </Balancer>
-      <div className="mt-8">
-        <Answers gameState={gameState} />
+    <div className="min-h-dvh flex items-center">
+      <div className="p-8 w-full">
+        <Balancer className="text-5xl font-bold text-center !block mx-auto">
+          {currentQuestion.question}
+        </Balancer>
+        <div className="mt-16">
+          <Answers gameState={gameState} />
+        </div>
+        <div className="mt-16">
+          <Scores gameState={gameState} />
+        </div>
+        <ThemeSongPlayer />
+        <AnswerSoundPlayer />
       </div>
-      <ThemeSongPlayer />
-      <AnswerSoundPlayer />
     </div>
   );
 }
@@ -59,7 +65,7 @@ const Answers = ({ gameState }: { gameState: GameState }) => {
   const rightQuestions = currentQuestion.answers.slice(cutoff);
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 max-w-4xl mx-auto border-4 border-amber-300 rounded-2xl p-4 bg-blue-950">
+    <div className="grid grid-cols-2 gap-x-4 max-w-5xl mx-auto border-4 border-amber-300 rounded-4xl p-4 bg-blue-950">
       <div className="space-y-4">
         {leftQuestions.map((answer) => {
           return (
@@ -104,17 +110,50 @@ const Answer = ({
   const revealed = gameState.revealedAnswers.includes(text);
 
   return (
-    <div className="rounded-2xl px-5 py-4 bg-gradient-to-b from-blue-500 to-blue-700 h-[68px]">
+    <div className="rounded-2xl px-5 bg-gradient-to-b from-blue-500 to-blue-700 h-[68px]">
       {revealed ? (
         <div className="flex justify-between items-center gap-x-4 h-full">
-          <p className="text-2xl font-bold">{text}</p>
-          <p className="text-xl font-semibold">{points}</p>
+          <p className="text-3xl font-bold">{text}</p>
+          <p className="text-2xl font-semibold">{points}</p>
         </div>
       ) : (
-        <p className="text-2xl font-semibold text-center bg-blue-800 w-max mx-auto px-3 py-0.5 rounded-full">
-          {number}
-        </p>
+        <div className="flex items-center h-full">
+          <p className="text-3xl font-semibold text-center bg-blue-800 w-max mx-auto px-3 py-0.5 rounded-full">
+            {number}
+          </p>
+        </div>
       )}
+    </div>
+  );
+};
+
+const Scores = ({ gameState }: { gameState: GameState }) => {
+  return (
+    <div className="max-w-5xl flex items-center gap-x-16 w-max mx-auto">
+      <Score label="PM" score={gameState.teamAScore ?? 0} />
+      <Score label="This Round" score={gameState.pendingScore ?? 0} large />
+      <Score label="TL" score={gameState.teamBScore ?? 0} />
+    </div>
+  );
+};
+
+const Score = ({
+  label,
+  score,
+  large = false,
+}: {
+  label: string;
+  score: number;
+  large?: boolean;
+}) => {
+  return (
+    <div>
+      <p className="text-2xl font-medium text-center">{label}</p>
+      <div className="mt-2 bg-blue-500 px-8 py-4 rounded-3xl h-max">
+        <p className={clsx("text-7xl font-bold", large && "text-8xl")}>
+          {score}
+        </p>
+      </div>
     </div>
   );
 };
