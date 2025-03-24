@@ -17,13 +17,13 @@ export default function Scoreboard() {
     },
   });
 
-  // if (!hasInteracted) {
-  //   return (
-  //     <div className="p-4">
-  //       <button onClick={() => setHasInteracted(true)}>Start</button>
-  //     </div>
-  //   );
-  // }
+  if (!hasInteracted) {
+    return (
+      <div className="p-4">
+        <button onClick={() => setHasInteracted(true)}>Start</button>
+      </div>
+    );
+  }
 
   if (!data) return null;
 
