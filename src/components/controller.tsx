@@ -32,8 +32,10 @@ export default function Controller() {
         <p>Pending: {gameState.pendingScore ?? 0}</p>
         <p>Team A: {gameState.teamAScore ?? 0}</p>
         <p>Team B: {gameState.teamBScore ?? 0}</p>
+        <p>Strikes: {gameState.strikeCount ?? 0}</p>
       </div>
       <Answers gameState={gameState} />
+      <StrikeCounter gameState={gameState} />
     </div>
   );
 }
@@ -154,6 +156,41 @@ const Answer = ({
         </span>
       )}
     </Button>
+  );
+};
+
+const StrikeCounter = ({ gameState }: { gameState: GameState }) => {
+  const playIncorrectAnswerSound = db.rooms.usePublishTopic(
+    room,
+    EVENTS.PLAY_INCORRECT_ANSWER_SOUND
+  );
+
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <Button
+        onClick={() => {
+          db.transact(
+            db.tx.gameState[SINGLETON_ID].update({
+              strikeCount: gameState.strikeCount + 1,
+            })
+          );
+          playIncorrectAnswerSound(undefined);
+        }}
+      >
+        Strike++
+      </Button>
+      <Button
+        onClick={() => {
+          db.transact(
+            db.tx.gameState[SINGLETON_ID].update({
+              strikeCount: gameState.strikeCount - 1,
+            })
+          );
+        }}
+      >
+        Strike-- (rare)
+      </Button>
+    </div>
   );
 };
 
