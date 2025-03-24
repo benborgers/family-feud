@@ -16,13 +16,13 @@ export default function Scoreboard() {
     },
   });
 
-  if (!hasInteracted) {
-    return (
-      <div className="p-4">
-        <button onClick={() => setHasInteracted(true)}>Start</button>
-      </div>
-    );
-  }
+  // if (!hasInteracted) {
+  //   return (
+  //     <div className="p-4">
+  //       <button onClick={() => setHasInteracted(true)}>Start</button>
+  //     </div>
+  //   );
+  // }
 
   if (!data) return null;
 
@@ -36,7 +36,9 @@ export default function Scoreboard() {
       <Balancer className="text-5xl font-bold text-center !block mx-auto">
         {currentQuestion.question}
       </Balancer>
-      <Answers gameState={gameState} />
+      <div className="mt-8">
+        <Answers gameState={gameState} />
+      </div>
       <ThemeSongPlayer />
     </div>
   );
@@ -51,11 +53,67 @@ const playAudio = (url: string) => {
 const Answers = ({ gameState }: { gameState: GameState }) => {
   const currentQuestion = getCurrentQuestion(gameState.currentQuestionId)!;
 
+  const cutoff = Math.ceil(currentQuestion.answers.length / 2);
+  const leftQuestions = currentQuestion.answers.slice(0, cutoff);
+  const rightQuestions = currentQuestion.answers.slice(cutoff);
+
   return (
-    <div className="grid grid-cols-2 gap-8 max-w-2xl mx-auto">
-      {currentQuestion.answers.map((answer) => {
-        return <div key={answer.answer}>{answer.answer}</div>;
-      })}
+    <div className="grid grid-cols-2 gap-x-4 max-w-2xl mx-auto border-4 border-amber-300 rounded-2xl p-4 bg-blue-950">
+      <div className="space-y-4">
+        {leftQuestions.map((answer) => {
+          return (
+            <Answer
+              key={answer.answer}
+              text={answer.answer}
+              points={answer.points}
+              number={currentQuestion.answers.indexOf(answer) + 1}
+              gameState={gameState}
+            />
+          );
+        })}
+      </div>
+      <div className="space-y-4">
+        {rightQuestions.map((answer) => {
+          return (
+            <Answer
+              key={answer.answer}
+              text={answer.answer}
+              points={answer.points}
+              number={currentQuestion.answers.indexOf(answer) + 1}
+              gameState={gameState}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const Answer = ({
+  text,
+  points,
+  number,
+  gameState,
+}: {
+  text: string;
+  points: number;
+  number: number;
+  gameState: GameState;
+}) => {
+  const revealed = gameState.revealedAnswers.includes(text);
+
+  return (
+    <div className="rounded-2xl px-5 py-4 bg-gradient-to-b from-blue-500 to-blue-700 h-[68px]">
+      {revealed ? (
+        <div className="flex justify-between items-center h-full">
+          <p className="text-2xl font-bold">{text}</p>
+          <p className="text-xl font-semibold">{points}</p>
+        </div>
+      ) : (
+        <p className="text-2xl font-semibold text-center bg-blue-800 w-max mx-auto px-3 py-0.5 rounded-full">
+          {number}
+        </p>
+      )}
     </div>
   );
 };

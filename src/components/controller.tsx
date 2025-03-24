@@ -75,63 +75,78 @@ const Answers = ({ gameState }: { gameState: GameState }) => {
 
   if (currentQuestion === null) return null;
 
-  return (
-    <div className="grid grid-cols-2 gap-4">
-      {currentQuestion.answers.map((answer) => {
-        const revealed = gameState.revealedAnswers?.includes(answer.answer);
-        const awardedToPendingPoints =
-          gameState.awardedToPendingPointsAnswers?.includes(answer.answer);
+  const cutoff = Math.ceil(currentQuestion.answers.length / 2);
+  const leftQuestions = currentQuestion.answers.slice(0, cutoff);
+  const rightQuestions = currentQuestion.answers.slice(cutoff);
 
-        return (
-          <Button
-            key={answer.answer}
-            onClick={() => {
-              if (!revealed) {
-                if (confirm(`Reveal “${answer.answer}?”`)) {
-                  db.transact(
-                    db.tx.gameState[SINGLETON_ID].update({
-                      revealedAnswers: [
-                        ...gameState.revealedAnswers,
-                        answer.answer,
-                      ],
-                    })
-                  );
-                }
-              } else if (!awardedToPendingPoints) {
-                if (
-                  confirm(
-                    `Add ${answer.points} pending points for ${answer.answer}?`
-                  )
-                ) {
-                  db.transact(
-                    db.tx.gameState[SINGLETON_ID].update({
-                      awardedToPendingPointsAnswers: [
-                        ...gameState.awardedToPendingPointsAnswers,
-                        answer.answer,
-                      ],
-                      pendingScore: gameState.pendingScore + answer.points,
-                    })
-                  );
-                }
-              }
-            }}
-            style={{
-              opacity: awardedToPendingPoints ? 0.1 : revealed ? 0.5 : 1,
-            }}
-          >
-            {awardedToPendingPoints ? (
-              <span>awarded</span>
-            ) : revealed ? (
-              <span>give {answer.points} points?</span>
-            ) : (
-              <span>
-                {answer.answer} ({answer.points})
-              </span>
-            )}
-          </Button>
-        );
-      })}
+  return (
+    <div className="grid grid-cols-2 gap-x-4">
+      <div className="space-y-4">
+        {leftQuestions.map((answer) => (
+          <Answer key={answer.answer} answer={answer} gameState={gameState} />
+        ))}
+      </div>
+      <div className="space-y-4">
+        {rightQuestions.map((answer) => (
+          <Answer key={answer.answer} answer={answer} gameState={gameState} />
+        ))}
+      </div>
     </div>
+  );
+};
+
+const Answer = ({
+  answer,
+  gameState,
+}: {
+  answer: { answer: string; points: number };
+  gameState: GameState;
+}) => {
+  const revealed = gameState.revealedAnswers?.includes(answer.answer);
+  const awardedToPendingPoints =
+    gameState.awardedToPendingPointsAnswers?.includes(answer.answer);
+
+  return (
+    <Button
+      onClick={() => {
+        if (!revealed) {
+          if (confirm(`Reveal "${answer.answer}?"`)) {
+            db.transact(
+              db.tx.gameState[SINGLETON_ID].update({
+                revealedAnswers: [...gameState.revealedAnswers, answer.answer],
+              })
+            );
+          }
+        } else if (!awardedToPendingPoints) {
+          if (
+            confirm(`Add ${answer.points} pending points for ${answer.answer}?`)
+          ) {
+            db.transact(
+              db.tx.gameState[SINGLETON_ID].update({
+                awardedToPendingPointsAnswers: [
+                  ...gameState.awardedToPendingPointsAnswers,
+                  answer.answer,
+                ],
+                pendingScore: gameState.pendingScore + answer.points,
+              })
+            );
+          }
+        }
+      }}
+      style={{
+        opacity: awardedToPendingPoints ? 0.1 : revealed ? 0.5 : 1,
+      }}
+    >
+      {awardedToPendingPoints ? (
+        <span>awarded</span>
+      ) : revealed ? (
+        <span>give {answer.points} points?</span>
+      ) : (
+        <span>
+          {answer.answer} ({answer.points})
+        </span>
+      )}
+    </Button>
   );
 };
 
