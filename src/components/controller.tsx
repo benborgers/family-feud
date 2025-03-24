@@ -26,6 +26,22 @@ export default function Controller() {
 
   return (
     <div className="p-4 space-y-4">
+      <Button
+        onClick={() => {
+          if (confirm("Are you sure you want to reset ALL points?")) {
+            db.transact(
+              db.tx.gameState[SINGLETON_ID].update({
+                pendingScore: 0,
+                teamAScore: 0,
+                teamBScore: 0,
+                strikeCount: 0,
+              })
+            );
+          }
+        }}
+      >
+        Reset Points
+      </Button>
       <ThemeSongButton />
       <QuestionSelector gameState={gameState} />
       <div>
@@ -35,7 +51,12 @@ export default function Controller() {
         <p>Strikes: {gameState.strikeCount ?? 0}</p>
       </div>
       <Answers gameState={gameState} />
-      <StrikeCounter gameState={gameState} />
+      <div className="pt-4">
+        <StrikeCounter gameState={gameState} />
+      </div>
+      <div className="pt-4">
+        <PointAllocation gameState={gameState} />
+      </div>
     </div>
   );
 }
@@ -210,6 +231,48 @@ const StrikeCounter = ({ gameState }: { gameState: GameState }) => {
   );
 };
 
+const PointAllocation = ({ gameState }: { gameState: GameState }) => {
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <Button
+        onClick={() => {
+          if (
+            confirm(
+              `Are you sure you want to give ${gameState.pendingScore} pending points to Team A?`
+            )
+          ) {
+            db.transact(
+              db.tx.gameState[SINGLETON_ID].update({
+                teamAScore: gameState.teamAScore + gameState.pendingScore,
+                pendingScore: 0,
+              })
+            );
+          }
+        }}
+      >
+        Pending &rarr; Team A
+      </Button>
+      <Button
+        onClick={() => {
+          if (
+            confirm(
+              `Are you sure you want to give ${gameState.pendingScore} pending points to Team B?`
+            )
+          ) {
+            db.transact(
+              db.tx.gameState[SINGLETON_ID].update({
+                teamBScore: gameState.teamBScore + gameState.pendingScore,
+                pendingScore: 0,
+              })
+            );
+          }
+        }}
+      >
+        Pending &rarr; Team B
+      </Button>
+    </div>
+  );
+};
 const ThemeSongButton = () => {
   const toggleThemeSong = db.rooms.usePublishTopic(
     room,
