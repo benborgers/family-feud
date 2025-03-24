@@ -26,7 +26,7 @@ export default function Scoreboard() {
 
   if (!data) return null;
 
-  const gameState = data.gameState[0];
+  const gameState = data.gameState[0] as unknown as GameState;
 
   const currentQuestion = getCurrentQuestion(gameState.currentQuestionId);
   if (currentQuestion === null) return null;
@@ -36,7 +36,7 @@ export default function Scoreboard() {
       <Balancer className="text-5xl font-bold text-center !block mx-auto">
         {currentQuestion.question}
       </Balancer>
-      <Answers gameState={gameState} currentQuestion={currentQuestion} />
+      <Answers gameState={gameState} />
       <ThemeSongPlayer />
     </div>
   );
