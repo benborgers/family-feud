@@ -76,6 +76,7 @@ const QuestionSelector = ({ gameState }: { gameState: GameState }) => {
             db.tx.gameState[SINGLETON_ID].update({
               currentQuestionId: value === UNDEFINED_SENTINEL ? null : value,
               pendingScore: 0,
+              strikeCount: 0,
               revealedAnswers: [],
               awardedToPendingPointsAnswers: [],
             })
@@ -144,9 +145,9 @@ const Answer = ({
                 revealedAnswers: [...gameState.revealedAnswers, answer.answer],
               })
             );
-          }
 
-          playCorrectAnswerSound(undefined);
+            playCorrectAnswerSound(undefined);
+          }
         } else if (!awardedToPendingPoints) {
           if (
             confirm(`Add ${answer.points} pending points for ${answer.answer}?`)
