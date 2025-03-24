@@ -102,6 +102,11 @@ const Answer = ({
   answer: { answer: string; points: number };
   gameState: GameState;
 }) => {
+  const playCorrectAnswerSound = db.rooms.usePublishTopic(
+    room,
+    EVENTS.PLAY_CORRECT_ANSWER_SOUND
+  );
+
   const revealed = gameState.revealedAnswers?.includes(answer.answer);
   const awardedToPendingPoints =
     gameState.awardedToPendingPointsAnswers?.includes(answer.answer);
@@ -117,6 +122,8 @@ const Answer = ({
               })
             );
           }
+
+          playCorrectAnswerSound(undefined);
         } else if (!awardedToPendingPoints) {
           if (
             confirm(`Add ${answer.points} pending points for ${answer.answer}?`)

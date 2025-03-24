@@ -40,6 +40,7 @@ export default function Scoreboard() {
         <Answers gameState={gameState} />
       </div>
       <ThemeSongPlayer />
+      <AnswerSoundPlayer />
     </div>
   );
 }
@@ -58,7 +59,7 @@ const Answers = ({ gameState }: { gameState: GameState }) => {
   const rightQuestions = currentQuestion.answers.slice(cutoff);
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 max-w-2xl mx-auto border-4 border-amber-300 rounded-2xl p-4 bg-blue-950">
+    <div className="grid grid-cols-2 gap-x-4 max-w-4xl mx-auto border-4 border-amber-300 rounded-2xl p-4 bg-blue-950">
       <div className="space-y-4">
         {leftQuestions.map((answer) => {
           return (
@@ -105,7 +106,7 @@ const Answer = ({
   return (
     <div className="rounded-2xl px-5 py-4 bg-gradient-to-b from-blue-500 to-blue-700 h-[68px]">
       {revealed ? (
-        <div className="flex justify-between items-center h-full">
+        <div className="flex justify-between items-center gap-x-4 h-full">
           <p className="text-2xl font-bold">{text}</p>
           <p className="text-xl font-semibold">{points}</p>
         </div>
@@ -142,6 +143,18 @@ const ThemeSongPlayer = () => {
         isPlaying.current = false;
       });
     }
+  });
+
+  return null;
+};
+
+const AnswerSoundPlayer = () => {
+  db.rooms.useTopicEffect(room, EVENTS.PLAY_CORRECT_ANSWER_SOUND, () => {
+    playAudio("/correct.mp3");
+  });
+
+  db.rooms.useTopicEffect(room, EVENTS.PLAY_INCORRECT_ANSWER_SOUND, () => {
+    playAudio("/incorrect.mp3");
   });
 
   return null;

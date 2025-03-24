@@ -10,4 +10,6 @@ export const SINGLETON_ID = "00000000-0000-0000-0000-000000000000";
 
 export const EVENTS = {
   TOGGLE_THEME_SONG: "toggle_theme_song",
+  PLAY_CORRECT_ANSWER_SOUND: "play_correct_answer_sound",
+  PLAY_INCORRECT_ANSWER_SOUND: "play_incorrect_answer_sound",
 };
