@@ -17,6 +17,8 @@ export default function Scoreboard() {
     },
   });
 
+  // Chrome doesn't let you play audio if you haven't interacted with the page.
+  // This button forces interaction before the game starts.
   if (!hasInteracted) {
     return (
       <div className="p-4">
