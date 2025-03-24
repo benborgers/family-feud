@@ -164,9 +164,14 @@ const StrikeCounter = ({ gameState }: { gameState: GameState }) => {
     room,
     EVENTS.PLAY_INCORRECT_ANSWER_SOUND
   );
+  const showStrikes = db.rooms.usePublishTopic(room, EVENTS.SHOW_STRIKES);
+  const showMaxStrikes = db.rooms.usePublishTopic(
+    room,
+    EVENTS.SHOW_MAX_STRIKES
+  );
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-3 gap-4">
       <Button
         onClick={() => {
           db.transact(
@@ -175,12 +180,23 @@ const StrikeCounter = ({ gameState }: { gameState: GameState }) => {
             })
           );
           playIncorrectAnswerSound(undefined);
+          showStrikes(undefined);
         }}
       >
         Strike++
       </Button>
       <Button
         onClick={() => {
+          playIncorrectAnswerSound(undefined);
+          showMaxStrikes(undefined);
+        }}
+      >
+        Max!! (3)
+      </Button>
+      <Button
+        onClick={() => {
+          if (gameState.strikeCount === 0) return;
+
           db.transact(
             db.tx.gameState[SINGLETON_ID].update({
               strikeCount: gameState.strikeCount - 1,
@@ -188,7 +204,7 @@ const StrikeCounter = ({ gameState }: { gameState: GameState }) => {
           );
         }}
       >
-        Strike-- (rare)
+        Strike--
       </Button>
     </div>
   );

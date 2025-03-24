@@ -12,4 +12,6 @@ export const EVENTS = {
   TOGGLE_THEME_SONG: "toggle_theme_song",
   PLAY_CORRECT_ANSWER_SOUND: "play_correct_answer_sound",
   PLAY_INCORRECT_ANSWER_SOUND: "play_incorrect_answer_sound",
+  SHOW_STRIKES: "show_strikes",
+  SHOW_MAX_STRIKES: "show_max_strikes",
 };

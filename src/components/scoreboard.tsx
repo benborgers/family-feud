@@ -44,6 +44,7 @@ export default function Scoreboard() {
         <div className="mt-16">
           <Scores gameState={gameState} />
         </div>
+        <Strikes gameState={gameState} />
         <ThemeSongPlayer />
         <AnswerSoundPlayer />
       </div>
@@ -153,6 +154,49 @@ const Score = ({
         <p className={clsx("text-7xl font-bold", large && "text-8xl")}>
           {score}
         </p>
+      </div>
+    </div>
+  );
+};
+
+const Strikes = ({ gameState }: { gameState: GameState }) => {
+  const [showStrikes, setShowStrikes] = useState(false);
+  const [isMax, setIsMax] = useState(false);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const revealStrikes = () => {
+    setShowStrikes(true);
+
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+
+    timeout.current = setTimeout(() => {
+      setShowStrikes(false);
+      setIsMax(false);
+    }, 1_500);
+  };
+
+  db.rooms.useTopicEffect(room, EVENTS.SHOW_STRIKES, revealStrikes);
+  db.rooms.useTopicEffect(room, EVENTS.SHOW_MAX_STRIKES, () => {
+    setIsMax(true);
+    revealStrikes();
+  });
+
+  return (
+    <div
+      className={clsx(
+        "bg-black/80 fixed inset-0 p-12",
+        !showStrikes && "opacity-0 pointer-events-none",
+        "transition-opacity duration-300"
+      )}
+    >
+      <div className="h-full flex gap-x-8 items-center justify-center">
+        {Array.from({ length: isMax ? 3 : gameState.strikeCount ?? 0 }).map(
+          (_, index) => (
+            <img key={index} src="/strike.png" className="w-64 h-64" />
+          )
+        )}
       </div>
     </div>
   );
