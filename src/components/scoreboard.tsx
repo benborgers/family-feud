@@ -32,7 +32,12 @@ export default function Scoreboard() {
   const gameState = data.gameState[0] as unknown as GameState;
 
   const currentQuestion = getCurrentQuestion(gameState.currentQuestionId);
-  if (currentQuestion === null) return null;
+  if (currentQuestion === null)
+    return (
+      <div className="h-dvh flex items-center justify-center bg-[#ebe0d0]">
+        <img src="/logo.png" className="h-full object-contain" />
+      </div>
+    );
 
   return (
     <div className="min-h-dvh flex items-center">
