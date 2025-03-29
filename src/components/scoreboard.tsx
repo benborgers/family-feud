@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { db, EVENTS, room, SINGLETON_ID } from "../lib/db";
 import { getCurrentQuestion } from "../lib/questions";
@@ -56,6 +56,7 @@ export default function Scoreboard() {
       )}
       <ThemeSongPlayer />
       <AnswerSoundPlayer />
+      <Buzzer />
     </div>
   );
 }
@@ -249,5 +250,86 @@ const AnswerSoundPlayer = () => {
   });
 
   return null;
+};
+
+const Buzzer = () => {
+  const [buzzerActive, setBuzzerActive] = useState(false);
+  const [winner, setWinner] = useState<"left" | "right" | null>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Handle key events
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // "B" key to activate the buzzer
+      if (e.key.toLowerCase() === "b" && !buzzerActive && winner === null) {
+        setBuzzerActive(true);
+        return;
+      }
+
+      // Check for Shift keys when buzzer is active
+      if (buzzerActive && winner === null) {
+        if (e.key === "Shift" && e.location === 1) {
+          // Left Shift key
+          setWinner("left");
+          setTimeout(() => {
+            setBuzzerActive(false);
+            
+            if (timeout.current) {
+              clearTimeout(timeout.current);
+            }
+            
+            timeout.current = setTimeout(() => {
+              setWinner(null);
+            }, 2000);
+          }, 0);
+        } else if (e.key === "Shift" && e.location === 2) {
+          // Right Shift key
+          setWinner("right");
+          setTimeout(() => {
+            setBuzzerActive(false);
+            
+            if (timeout.current) {
+              clearTimeout(timeout.current);
+            }
+            
+            timeout.current = setTimeout(() => {
+              setWinner(null);
+            }, 2000);
+          }, 0);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [buzzerActive, winner]);
+
+  return (
+    <>
+      {/* Buzzer indicator */}
+      {buzzerActive && (
+        <div className="fixed top-4 left-4 w-4 h-4 bg-red-500 rounded-full z-50"></div>
+      )}
+
+      {/* Winner flash */}
+      {winner && (
+        <div className="fixed inset-0 pointer-events-none z-40 flex">
+          {winner === "left" ? (
+            <>
+              <div className="w-1/2 bg-emerald-600/70 animate-pulse"></div>
+              <div className="w-1/2"></div>
+            </>
+          ) : (
+            <>
+              <div className="w-1/2"></div>
+              <div className="w-1/2 bg-emerald-600/70 animate-pulse"></div>
+            </>
+          )}
+        </div>
+      )}
+    </>
+  );
 };
 
