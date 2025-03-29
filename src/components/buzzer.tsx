@@ -27,7 +27,10 @@ export default function Buzzer() {
             winner === "left" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onClick={() => handleBuzz("left")}
-          style={{ WebkitTapHighlightColor: "transparent" }}
+          style={{
+            WebkitTapHighlightColor: "transparent",
+            touchAction: "none",
+          }}
         >
           <div className="text-4xl font-bold">TEAM A</div>
         </div>
@@ -36,7 +39,10 @@ export default function Buzzer() {
             winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onClick={() => handleBuzz("right")}
-          style={{ WebkitTapHighlightColor: "transparent" }}
+          style={{
+            WebkitTapHighlightColor: "transparent",
+            touchAction: "none",
+          }}
         >
           <div className="text-4xl font-bold">TEAM B</div>
         </div>
