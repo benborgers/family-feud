@@ -14,5 +14,4 @@ export const EVENTS = {
   PLAY_INCORRECT_ANSWER_SOUND: "play_incorrect_answer_sound",
   SHOW_STRIKES: "show_strikes",
   SHOW_MAX_STRIKES: "show_max_strikes",
-  BUZZER_WINNER: "buzzer_winner",
 };
