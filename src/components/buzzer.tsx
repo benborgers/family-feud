@@ -28,7 +28,7 @@ export default function Buzzer() {
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
             winner === "left" ? "bg-emerald-600" : "bg-blue-800"
           }`}
-          onClick={() => handleBuzz("left")}
+          onPointerDown={() => handleBuzz("left")}
         >
           <div className="text-4xl font-bold">TEAM A</div>
         </div>
@@ -36,7 +36,7 @@ export default function Buzzer() {
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
             winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
-          onClick={() => handleBuzz("right")}
+          onPointerDown={() => handleBuzz("right")}
         >
           <div className="text-4xl font-bold">TEAM B</div>
         </div>
