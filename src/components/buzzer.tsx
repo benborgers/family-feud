@@ -8,11 +8,12 @@ export default function Buzzer() {
     EVENTS.BUZZER_WINNER
   );
 
-  const handleBuzz = (side: "left" | "right") => {
+  const handleBuzz = (side: "left" | "right", event: React.TouchEvent) => {
+    // Prevent default touch behavior to avoid any iOS-specific issues
+    event.preventDefault();
+
     if (winner === null) {
       setWinner(side);
-
-      // Publish buzzer event to the scoreboard
       publishBuzzerWinner(side);
     }
   };
@@ -28,7 +29,8 @@ export default function Buzzer() {
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
             winner === "left" ? "bg-emerald-600" : "bg-blue-800"
           }`}
-          onPointerDown={() => handleBuzz("left")}
+          onTouchStart={(e) => handleBuzz("left", e)}
+          style={{ touchAction: "none" }}
         >
           <div className="text-4xl font-bold">TEAM A</div>
         </div>
@@ -36,7 +38,8 @@ export default function Buzzer() {
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
             winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
-          onPointerDown={() => handleBuzz("right")}
+          onTouchStart={(e) => handleBuzz("right", e)}
+          style={{ touchAction: "none" }}
         >
           <div className="text-4xl font-bold">TEAM B</div>
         </div>
