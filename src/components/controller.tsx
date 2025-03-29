@@ -95,9 +95,12 @@ const QuestionSelector = ({ gameState }: { gameState: GameState }) => {
 };
 
 const Answers = ({ gameState }: { gameState: GameState }) => {
-  const currentQuestion = getCurrentQuestion(gameState.currentQuestionId);
-
-  if (currentQuestion === null) return null;
+  // Why don't we render nothing if there's no current question?
+  // Conditionally rendering this causes a leave-room-ok to be sent to the controller
+  // itself, probably because of the nested usePublishTopic in <Answer />,
+  // which causes Instant it to refuse to send future events.
+  const currentQuestion =
+    getCurrentQuestion(gameState.currentQuestionId) ?? QUESTIONS[0];
 
   const cutoff = Math.ceil(currentQuestion.answers.length / 2);
   const leftQuestions = currentQuestion.answers.slice(0, cutoff);
