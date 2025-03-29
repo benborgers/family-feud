@@ -36,7 +36,7 @@ export default function Scoreboard() {
   return (
     <div className="min-h-dvh flex items-center">
       {currentQuestion === null && (
-        <div className="h-dvh flex items-center justify-center bg-[#ebe0d0]">
+        <div className="h-dvh flex items-center justify-center bg-[#ebe0d0] w-full">
           <img src="/logo.png" className="h-full object-contain" />
         </div>
       )}
@@ -253,7 +253,9 @@ const AnswerSoundPlayer = () => {
 };
 
 const BuzzerFlash = () => {
-  const [buzzerWinner, setBuzzerWinner] = useState<"left" | "right" | null>(null);
+  const [buzzerWinner, setBuzzerWinner] = useState<"left" | "right" | null>(
+    null
+  );
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleBuzzerEvent = (side: "left" | "right") => {
