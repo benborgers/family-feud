@@ -38,7 +38,7 @@ export default function Buzzer() {
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
             winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
-          onClick={() => handleBuzz("right")}
+          onPointerDown={() => handleBuzz("right")}
           style={{
             WebkitTapHighlightColor: "transparent",
             touchAction: "none",
@@ -51,7 +51,7 @@ export default function Buzzer() {
         <div className="py-4 text-center">
           <button
             className="px-8 py-4 bg-blue-700 rounded-lg text-2xl font-bold"
-            onClick={resetBuzzer}
+            onPointerDown={resetBuzzer}
           >
             RESET
           </button>
