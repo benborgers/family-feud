@@ -1,11 +1,16 @@
 import { useState } from "react";
+import { db, EVENTS, room } from "../lib/db";
 
 export default function Buzzer() {
   const [winner, setWinner] = useState<"left" | "right" | null>(null);
+  const publishBuzzerWinner = db.rooms.usePublishTopic(room, EVENTS.BUZZER_WINNER);
 
   const handleBuzz = (side: "left" | "right") => {
     if (winner === null) {
       setWinner(side);
+      
+      // Publish buzzer event to the scoreboard
+      publishBuzzerWinner(side);
     }
   };
 
@@ -18,7 +23,7 @@ export default function Buzzer() {
       <div className="flex flex-1">
         <div
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
-            winner === "left" ? "bg-green-500" : "bg-blue-800"
+            winner === "left" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onClick={() => handleBuzz("left")}
         >
@@ -26,7 +31,7 @@ export default function Buzzer() {
         </div>
         <div
           className={`flex-1 m-2 rounded-lg flex items-center justify-center cursor-pointer ${
-            winner === "right" ? "bg-green-500" : "bg-blue-800"
+            winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onClick={() => handleBuzz("right")}
         >

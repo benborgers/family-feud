@@ -56,6 +56,7 @@ export default function Scoreboard() {
       )}
       <ThemeSongPlayer />
       <AnswerSoundPlayer />
+      <BuzzerFlash />
     </div>
   );
 }
@@ -249,4 +250,39 @@ const AnswerSoundPlayer = () => {
   });
 
   return null;
+};
+
+const BuzzerFlash = () => {
+  const [buzzerWinner, setBuzzerWinner] = useState<"left" | "right" | null>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleBuzzerEvent = (side: "left" | "right") => {
+    setBuzzerWinner(side);
+
+    if (timeout.current) {
+      clearTimeout(timeout.current);
+    }
+
+    timeout.current = setTimeout(() => {
+      setBuzzerWinner(null);
+    }, 2_000); // Display for 2 seconds
+  };
+
+  db.rooms.useTopicEffect(room, EVENTS.BUZZER_WINNER, handleBuzzerEvent);
+
+  if (!buzzerWinner) return null;
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 flex">
+      {buzzerWinner === "left" && (
+        <div className="w-1/2 bg-emerald-600/80"></div>
+      )}
+      {buzzerWinner === "right" && (
+        <>
+          <div className="w-1/2"></div>
+          <div className="w-1/2 bg-emerald-600/80"></div>
+        </>
+      )}
+    </div>
+  );
 };
