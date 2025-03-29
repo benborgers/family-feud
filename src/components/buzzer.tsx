@@ -8,9 +8,11 @@ export default function Buzzer() {
     EVENTS.BUZZER_WINNER
   );
 
-  const handleBuzz = (side: "left" | "right", event: React.TouchEvent) => {
-    // Prevent default touch behavior to avoid any iOS-specific issues
-    event.preventDefault();
+  const handleBuzz = (
+    side: "left" | "right",
+    event: React.TouchEvent | React.PointerEvent
+  ) => {
+    console.log(`Buzz event on ${side}:`, event.type);
 
     if (winner === null) {
       setWinner(side);
@@ -30,7 +32,11 @@ export default function Buzzer() {
             winner === "left" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onTouchStart={(e) => handleBuzz("left", e)}
-          style={{ touchAction: "none" }}
+          onPointerDown={(e) => handleBuzz("left", e)}
+          style={{
+            touchAction: "none",
+            WebkitTapHighlightColor: "transparent",
+          }}
         >
           <div className="text-4xl font-bold">TEAM A</div>
         </div>
@@ -39,7 +45,11 @@ export default function Buzzer() {
             winner === "right" ? "bg-emerald-600" : "bg-blue-800"
           }`}
           onTouchStart={(e) => handleBuzz("right", e)}
-          style={{ touchAction: "none" }}
+          onPointerDown={(e) => handleBuzz("right", e)}
+          style={{
+            touchAction: "none",
+            WebkitTapHighlightColor: "transparent",
+          }}
         >
           <div className="text-4xl font-bold">TEAM B</div>
         </div>
